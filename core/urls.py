@@ -4,7 +4,7 @@ from . import views
 
 app_name = 'core'
 urlpatterns = [
-    path('movies',
+    path('movies?',
          views.MovieList.as_view(),
          name='MovieList'),
     path('movie/<int:pk>',
