@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 
 
@@ -23,7 +24,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 SECRET_KEY = 'n+u&ezc@3gc=bjdgc3p=!*em*#^o_4i7t9ohan7mndj6q2nbw0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -34,6 +35,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'user',
     'core',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -89,6 +91,7 @@ DATABASES = {
     }
 }
 
+LOGIN_REDIRECT_URL = 'user:Login'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
