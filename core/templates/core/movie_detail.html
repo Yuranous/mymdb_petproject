@@ -5,31 +5,78 @@
 {% endblock %}
 
 {% block main %}
-<h1>{{ object }}</h1>
-<p class="lead">
-    {{ object.plot }}
-</p>
+    <div class="col">
+        <h1>{{ object }}</h1>
+        <p class="lead">
+            {{ object.plot }}
+        </p>
+    </div>
+    <ul class="movie_image list-inline">
+        {% for i in object.movieimage_set.all %}
+            <li class="list-inline-item">
+                <img src="{{ i.image.url }}">
+            </li>
+        {% endfor %}
+    </ul>
+    <p>Directed by {{ object.director }}</p>
+    <div class="container">
+        <h2>Actors:</h2>
+        <ul class="list-group">
+        {% for i in object.actors.all %}
+            <li class="list-group-item">
+                {{ i }}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div class="container">
+        <h2>Writers:</h2>
+        <ul class="list-group">
+        {% for i in object.writers.all %}
+            <li class="list-group-item">
+                {{ i }}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+
 {% endblock %}
 
 {% block sidebar %}
     {# rating div omitted #}
+    {% if image_form %}
         <div>
-            {% if vote_form %}
-                <form method="post"
-                      action="{{ vote_form_url }}">
-                    {% csrf_token %}
-                    {{ vote_form.as_p }}
+            <h2>Upload New Image</h2>
+            <form method="post"
+                  enctype="multipart/form-data"
+                  action="{% url 'core:MovieImageUpload' movie_id=object.id %}">
+                {% csrf_token %}
+                {{ image_form.as_p }}
+                <p>
                     <button class="btn btn-primary">
-                        Vote
+                        Upload
                     </button>
-                </form>
-            {% else %}
-                <p>Log in to vote for this movie</p>
-            {% endif %}
+                </p>
+            </form>
         </div>
-        <div>
-            <h2>
-                Score: {{ object.score|default_if_none:'TBD' }}
-            </h2>
-        </div>
+    {% endif %}
+    <div>
+        {% if vote_form %}
+            <form method="post"
+                  action="{{ vote_form_url }}">
+                {% csrf_token %}
+                {{ vote_form.as_p }}
+                <button class="btn btn-primary">
+                    Vote
+                </button>
+            </form>
+        {% else %}
+            <p>Log in to vote for this movie</p>
+        {% endif %}
+    </div>
+    <div>
+        <h2>
+            Score: {{ object.score|default_if_none:'TBD' }}
+        </h2>
+    </div>
 {% endblock %}

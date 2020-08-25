@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Sum
 
+from uuid import uuid4
+
 
 class MovieManager(models.Manager):
     def all_with_related_persons(self):
@@ -197,3 +199,41 @@ class VoteForm(forms.ModelForm):
         fields = (
             'value', 'user', 'movie'
         )
+
+
+def movie_directory_path_with_uuid(instance, filename):
+    return '{}/{}'.format(
+        instance.movie_id, uuid4())
+
+
+class MovieImage(models.Model):
+    image = models.ImageField(
+        upload_to=movie_directory_path_with_uuid
+    )
+    uploaded = models.DateTimeField(
+        auto_now_add=True
+    )
+    movie = models.ForeignKey(
+        'Movie', on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+
+
+class MovieImageForm(forms.ModelForm):
+    movie = forms.ModelChoiceField(
+        widget=forms.HiddenInput,
+        queryset=Movie.objects.all(),
+        disabled=True,
+    )
+    user = forms.ModelChoiceField(
+        widget=forms.HiddenInput,
+        queryset=get_user_model().objects.all(),
+        disabled=True,
+    )
+
+    class Meta:
+        model = MovieImage
+        fields = ('image', 'user', 'movie')
